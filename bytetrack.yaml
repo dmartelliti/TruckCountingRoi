@@ -1,0 +1,18 @@
+tracker_type: bytetrack
+
+# Association thresholds
+track_high_thresh: 0.5
+track_low_thresh: 0.1
+new_track_thresh: 0.5
+match_thresh: 0.8
+
+# Track management
+track_buffer: 15
+mot20: false
+
+# Filtering
+aspect_ratio_thresh: 3.0
+min_box_area: 1.0
+
+# Ultralytics-specific (OBLIGATORIO)
+fuse_score: true
