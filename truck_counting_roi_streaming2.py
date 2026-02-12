@@ -7,8 +7,8 @@ from tracking_detector import TrackingDetector
 # ==============================
 # CONFIG
 # ==============================
-VIDEO_PATH = "https://www.youtube.com/watch?v=WPMgP2C3_co"
-#VIDEO_PATH = "vehicle-counting.mp4"
+#VIDEO_PATH = "https://www.youtube.com/watch?v=WPMgP2C3_co"
+VIDEO_PATH = "vehicle-counting.mp4"
 
 tracking_detector = TrackingDetector(model_name="yolov8n.pt")
 

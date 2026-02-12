@@ -48,7 +48,7 @@ class TrackingDetector(object):
 
         return results[0]
 
-    def process(self, image: np.ndarray, offset: tuple) -> tuple:
+    def process(self, image: np.ndarray, offset: tuple = None) -> tuple:
         result = self.predict(image)
 
         if result.boxes is None or len(result.boxes) == 0:
@@ -57,10 +57,11 @@ class TrackingDetector(object):
         if result.boxes.id is None:
             return None, None
 
-        offset_y, offset_x = offset
         xyxy = result.boxes.xyxy.cpu().numpy()
-        xyxy[:, [0, 2]] += offset_x
-        xyxy[:, [1, 3]] += offset_y
+        if offset is not None:
+            offset_y, offset_x = offset
+            xyxy[:, [0, 2]] += offset_x
+            xyxy[:, [1, 3]] += offset_y
 
         detections = sv.Detections(
             xyxy=xyxy,

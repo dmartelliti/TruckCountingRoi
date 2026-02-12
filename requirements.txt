@@ -1,7 +1,21 @@
+# PyTorch GPU (CUDA 11.8)
+-f https://download.pytorch.org/whl/cu118
+torch==2.7.1+cu118
+torchvision==0.22.1+cu118
+torchaudio==2.7.1+cu118
+
+# OpenCV
 opencv-python==4.8.0.76
 opencv-python-headless==4.10.0.84
+
+# Supervision
 supervision==0.27.0
-torch==2.2.2
-torchvision==0.17.2
+
+# YOLO / Ultralytics
 ultralytics==8.4.9
 ultralytics-thop==2.0.18
+
+# Otros
+numpy==1.26.4
+yt-dlp==2026.1.31
+Flask==3.1.2
