@@ -1,0 +1,33 @@
+# for docker environment:
+#      docker compose up -d
+
+# for local environment:
+#      docker compose --env-file .env.local up -d
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: generic-rabbitmq
+    restart: unless-stopped
+
+    ports:
+      - "${RABBITMQ_AMQP_PORT:-5672}:5672"      # Host 5672 → Container 5672 (AMQP)
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"    # Host 15672 → Container 15672 (Management UI)
+
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  rabbitmq_data:

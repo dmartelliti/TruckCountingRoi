@@ -1,7 +1,17 @@
 import cv2
 from ultralytics import YOLO
 import supervision as sv
-import os
+
+import logging
+
+from application.video_source import VideoSource
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+
+logger = logging.getLogger("yolo-track")
 
 # Ejemplo de como usar un llm para detectar un perro usando sv y PaliGemma
 # https://roboflow.github.io/cheatsheet-supervision/
@@ -12,14 +22,12 @@ import os
 # ==============================
 # CONFIG
 # ==============================
-VIDEO_PATH = "data/vehicle-counting.mp4"  # 👈 ruta a tu MP4
+VIDEO_PATH = "https://www.youtube.com/watch?v=WPMgP2C3_co"
 # MODEL_PATH = "yolov8n.pt"
-MODEL_PATH = "models/yolov8s.pt"  ## Better for traffic
+MODEL_PATH = "../models/yolov8s.pt"  ## Better for traffic
 # MODEL_PATH = "yolov8m.pt"
 
 VEHICLE_CLASSES = [2, 3, 5, 7]
-
-assert os.path.exists(VIDEO_PATH), f"No existe el archivo: {VIDEO_PATH}"
 
 # ==============================
 # MODEL
@@ -32,29 +40,33 @@ model = YOLO(MODEL_PATH)
 box_annotator = sv.BoxAnnotator(thickness=5)
 label_annotator = sv.LabelAnnotator(text_scale=0.8)
 
+
 # ==============================
 # STREAM + TRACKING
 # ==============================
 
-results = model.track(
-    source=VIDEO_PATH,
-    classes=VEHICLE_CLASSES, ## Optimization
-    # imgsz=640,  # default  ## Optimization
-    # imgsz=480,      # ⚡ más rápido
-    # imgsz=320,      # ⚡⚡ ultra rápido (menos precisión)
-    tracker="bytetrack.yaml",
-    persist=True,
-    stream=True,
-    verbose=False
-)
-
 print("[INFO] Procesando video. Presioná 'q' para salir.")
+source = VideoSource("https://www.youtube.com/watch?v=WPMgP2C3_co")
+cap = source.open()
 
-for i, result in enumerate(results):
-    if i % 1 != 0: ## Optimization
-        continue
+print("▶️ Tracking iniciado (ESC para salir)")
 
-    frame = result.orig_img
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    results = model.track(
+        source=frame,
+        classes=VEHICLE_CLASSES,  ## Optimization
+        # imgsz=640,  # default  ## Optimization
+        # imgsz=480,      # ⚡ más rápido
+        # imgsz=320,      # ⚡⚡ ultra rápido (menos precisión)
+        tracker="bytetrack.yaml",
+        persist=True
+    )
+
+    result = results[0]
 
     if result.boxes.id is None:
         cv2.imshow("YOLO + ByteTrack (MP4)", frame)
@@ -77,6 +89,7 @@ for i, result in enumerate(results):
     ]
 
     frame = box_annotator.annotate(frame, detections)
+
     frame = label_annotator.annotate(frame, detections, labels)
 
     cv2.imshow("YOLO + ByteTrack (MP4)", frame)

@@ -1,14 +1,14 @@
 import cv2
 import supervision as sv
 
-from video_source import VideoSource
-from tracking_detector import TrackingDetector
+from application.video_source import VideoSource
+from core.utils.tracking_detector import TrackingDetector
 
 # ==============================
 # CONFIG
 # ==============================
-VIDEO_PATH = "https://www.youtube.com/watch?v=WPMgP2C3_co"
-#VIDEO_PATH = "vehicle-counting.mp4"
+#VIDEO_PATH = "https://www.youtube.com/watch?v=WPMgP2C3_co"
+VIDEO_PATH = "vehicle-counting.mp4"
 
 tracking_detector = TrackingDetector(model_name="yolov8n.pt")
 

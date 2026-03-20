@@ -1,4 +1,34 @@
-models
-data
-__pycache__
-.idea
+# environment
+.env
+.env.*
+
+# datasets
+data/*
+!data/.gitkeep
+
+# models
+models/*
+!models/.gitkeep
+
+# certificates / secrets
+certs/aws/*
+!certs/aws/.gitkeep
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# logs
+*.log
+
+# virtual environments
+venv/
